@@ -47,7 +47,7 @@ app.use(bodyParser.json());
 });*/
 
 //Sol1
-app.get('/autorun', (req, res) => {
+app.get('/querymore', (req, res) => {
     const str="Query More - ";
     // res.send(str);
 
