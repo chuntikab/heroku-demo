@@ -97,7 +97,7 @@ app.get('/querymore', (req, res) => {
         .on("error", function(err) {
             console.error(err);
         })
-        .run({ autoFetch : true, maxFetch : 1000000 });
+        .run({ autoFetch : true, maxFetch : 20000 });
 
         // res.send(str+" done");
     });
