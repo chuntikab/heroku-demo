@@ -80,7 +80,7 @@ app.get('/querymore', (req, res) => {
             for (var i = 0; i < records.length; i++) {
                 var data = {
                     Id: records[i].Id,
-                    Name__c: i+": apex"
+                    Name__c: i+": Apex Call "
                 };
                 //console.log(records[i].Name);
                 objlist.push(data);
