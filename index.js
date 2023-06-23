@@ -80,7 +80,7 @@ app.get('/querymore', (req, res) => {
             for (var i = 0; i < records.length; i++) {
                 var data = {
                     Id: records[i].Id,
-                    Name__c: 'heroku'+records[i].Id
+                    Name__c: i+' - Test heroku'
                 };
                 //console.log(records[i].Name);
                 objlist.push(data);
@@ -103,63 +103,63 @@ app.get('/querymore', (req, res) => {
     });
 });
 
-app.post('/autorunupdate', (req, res) => {
-    const str="Query More - ";
-    // res.send(str);
+// app.post('/autorunupdate', (req, res) => {
+//     const str="Query More - ";
+//     // res.send(str);
 
-    var conn = new jsforce.Connection({
-        // you can change loginUrl to connect to sandbox or prerelease env.
-        loginUrl: 'https://test.salesforce.com'
-    });
-    var username = 'sfdc-thaioil.r2@roundtwosolutions.com.devapex';
-    var password = 'sfdc@r22020';
+//     var conn = new jsforce.Connection({
+//         // you can change loginUrl to connect to sandbox or prerelease env.
+//         loginUrl: 'https://test.salesforce.com'
+//     });
+//     var username = 'sfdc-thaioil.r2@roundtwosolutions.com.devapex';
+//     var password = 'sfdc@r22020';
 
-    conn.login(username, password, function (err, userInfo) {
+//     conn.login(username, password, function (err, userInfo) {
 
-        if (err) {return console.error(err);}
-        console.log("accessToken: "+ conn.accessToken);
-        console.log("instanceUrl: "+ conn.instanceUrl);
-        console.log("User ID: " + userInfo.id);
-        console.log("Org ID: " + userInfo.organizationId);
+//         if (err) {return console.error(err);}
+//         console.log("accessToken: "+ conn.accessToken);
+//         console.log("instanceUrl: "+ conn.instanceUrl);
+//         console.log("User ID: " + userInfo.id);
+//         console.log("Org ID: " + userInfo.organizationId);
 
-        /*var records = [];
-        var query = conn.query("SELECT Id, Name__c,CreatedBy.Name FROM PTW_Inspection_Report__c WHERE Id=\'a22N0000001s2iCIAQ\'")
-        .on("record", function(record) {
-            records.push(record);
-        })
-        .on("end", function() {
-            console.log("total in database : " + query.totalSize);
-            console.log("total fetched : " + query.totalFetched);
-            // console.log("total records : " + JSON.stringify(records));
+//         /*var records = [];
+//         var query = conn.query("SELECT Id, Name__c,CreatedBy.Name FROM PTW_Inspection_Report__c WHERE Id=\'a22N0000001s2iCIAQ\'")
+//         .on("record", function(record) {
+//             records.push(record);
+//         })
+//         .on("end", function() {
+//             console.log("total in database : " + query.totalSize);
+//             console.log("total fetched : " + query.totalFetched);
+//             // console.log("total records : " + JSON.stringify(records));
 
-            for(var i = 0 ; i < records.length ; i++ )
-            {
-                // console.log(records[0].CreatedBy.Name);
-                records[i].Name__c = 'heroku'+records[i].Id;
-            }
-            res.send(str+records[0].Id);*/
+//             for(var i = 0 ; i < records.length ; i++ )
+//             {
+//                 // console.log(records[0].CreatedBy.Name);
+//                 records[i].Name__c = 'heroku'+records[i].Id;
+//             }
+//             res.send(str+records[0].Id);*/
 
-            console.log(req.body);
-            conn.sobject("PTW_Inspection_Report__c").update(req.body,
+//             console.log(req.body);
+//             conn.sobject("PTW_Inspection_Report__c").update(req.body,
 
-                function(err, rets) {
-                  if (err) { return console.error(err); }
-                  for (var i=0; i < rets.length; i++) {
-                    if (rets[i].success) {
-                      console.log("Updated Successfully : " + rets[i].id);
-                      res.send("Updated Successfully");
-                    }
-                  }
-            });
-        /*})
-        .on("error", function(err) {
-            console.error(err);
-        })
-        .run({ autoFetch : true, maxFetch : 1000000 });*/
+//                 function(err, rets) {
+//                   if (err) { return console.error(err); }
+//                   for (var i=0; i < rets.length; i++) {
+//                     if (rets[i].success) {
+//                       console.log("Updated Successfully : " + rets[i].id);
+//                       res.send("Updated Successfully");
+//                     }
+//                   }
+//             });
+//         /*})
+//         .on("error", function(err) {
+//             console.error(err);
+//         })
+//         .run({ autoFetch : true, maxFetch : 1000000 });*/
 
-        // res.send(str+" done");
-    });
-});
+//         // res.send(str+" done");
+//     });
+// });
 
 //Sol2
 /*app.get('/', (req, res) => {
