@@ -67,7 +67,7 @@ app.get('/querymore', (req, res) => {
         console.log("Org ID: " + userInfo.organizationId);
 
         var records = [];
-        var query = conn.query("SELECT Id, Name__c,CreatedBy.Name FROM PTW_Inspection_Report__c LIMIT 500")
+        var query = conn.query("SELECT Id, Name__c,CreatedBy.Name FROM PTW_Inspection_Report__c DESC LIMIT 500")
         .on("record", function(record) {
             records.push(record);
         })
@@ -80,7 +80,7 @@ app.get('/querymore', (req, res) => {
             for (var i = 0; i < records.length; i++) {
                 var data = {
                     Id: records[i].Id,
-                    Name__c: i+' - Test heroku'
+                    Name__c: i
                 };
                 //console.log(records[i].Name);
                 objlist.push(data);
