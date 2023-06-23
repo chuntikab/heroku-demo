@@ -67,7 +67,7 @@ app.get('/autorun', (req, res) => {
         console.log("Org ID: " + userInfo.organizationId);
 
         var records = [];
-        var query = conn.query("SELECT Id, Name__c,CreatedBy.Name FROM PTW_Inspection_Report__c WHERE Id=\'a22N0000001s2iCIAQ\'")
+        var query = conn.query("SELECT Id, Name__c,CreatedBy.Name FROM PTW_Inspection_Report__c")
         .on("record", function(record) {
             records.push(record);
         })
