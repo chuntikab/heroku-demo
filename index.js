@@ -67,7 +67,7 @@ app.get('/autorun', (req, res) => {
         console.log("Org ID: " + userInfo.organizationId);
 
         var records = [];
-        var query = conn.query("SELECT Id, Name__c,CreatedBy.Name FROM PTW_Inspection_Report__c LIMIT 10")
+        var query = conn.query("SELECT Id, Name__c,CreatedBy.Name FROM PTW_Inspection_Report__c WHERE Id=\'a22N0000001s2iCIAQ\'")
         .on("record", function(record) {
             records.push(record);
         })
@@ -79,20 +79,20 @@ app.get('/autorun', (req, res) => {
             for(var i = 0 ; i < records.length ; i++ )
             {
                 // console.log(records[0].CreatedBy.Name);
-                records[i].Name__c = 'heroku'+[i] ;
+                records[i].Name__c = 'heroku'+records[i].Id;
             }
-            res.send(str+records[0].Name__c);
-            conn.sobject("PTW_Inspection_Report__c").update(records,
+            res.send(str+records[0].Id);
+            // conn.sobject("PTW_Inspection_Report__c").update(req.body,
 
-                function(err, rets) {
-                  if (err) { return console.error(err); }
-                  for (var i=0; i < rets.length; i++) {
-                    if (rets[i].success) {
-                      console.log("Updated Successfully : " + rets[i].id);
-                      res.send("Updated Successfully");
-                    }
-                  }
-            });
+            //     function(err, rets) {
+            //       if (err) { return console.error(err); }
+            //       for (var i=0; i < rets.length; i++) {
+            //         if (rets[i].success) {
+            //           console.log("Updated Successfully : " + rets[i].id);
+            //           res.send("Updated Successfully");
+            //         }
+            //       }
+            // });
         })
         .on("error", function(err) {
             console.error(err);
