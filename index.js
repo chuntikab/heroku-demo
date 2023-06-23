@@ -82,6 +82,17 @@ app.get('/autorun', (req, res) => {
                 records[i].Name__c = 'heroku'+[i] ;
             }
             res.send(str+records[0].Name__c);
+            conn.sobject("PTW_Inspection_Report__c").update(records,
+
+                function(err, rets) {
+                  if (err) { return console.error(err); }
+                  for (var i=0; i < rets.length; i++) {
+                    if (rets[i].success) {
+                      console.log("Updated Successfully : " + rets[i].id);
+                      res.send("Updated Successfully");
+                    }
+                  }
+            });
         })
         .on("error", function(err) {
             console.error(err);
