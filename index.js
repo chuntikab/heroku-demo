@@ -76,23 +76,23 @@ app.get('/querymore', (req, res) => {
             console.log("total fetched : " + query.totalFetched);
             // console.log("total records : " + JSON.stringify(records));
 
-            for(var i = 0 ; i < records.length ; i++ )
-            {
-                // console.log(records[0].CreatedBy.Name);
-                records[i].Name__c = 'heroku'+records[i].Id;
+            var objlist = [];
+            for (var i = 0; i < records.length; i++) {
+                var data = {
+                    Id: records[i].Id,
+                    Name__c: 'heroku'+records[i].Id
+                };
+                //console.log(records[i].Name);
+                objlist.push(data);
+                //console.log(olist);
             }
-            res.send(str+records[0].Id);
-            // conn.sobject("PTW_Inspection_Report__c").update(req.body,
 
-            //     function(err, rets) {
-            //       if (err) { return console.error(err); }
-            //       for (var i=0; i < rets.length; i++) {
-            //         if (rets[i].success) {
-            //           console.log("Updated Successfully : " + rets[i].id);
-            //           res.send("Updated Successfully");
-            //         }
-            //       }
-            // });
+            conn.sobject('PTW_Inspection_Report__c')
+                .update(objlist, { allowRecursive: true })
+                .then((rets) => {
+                    console.log('Update Successfully');
+                    res.send('Update Successfully');
+            });
         })
         .on("error", function(err) {
             console.error(err);
