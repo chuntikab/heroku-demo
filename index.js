@@ -138,6 +138,8 @@ app.post('/autorunupdate', (req, res) => {
                 records[i].Name__c = 'heroku'+records[i].Id;
             }
             res.send(str+records[0].Id);*/
+
+            console.log(req.body);
             conn.sobject("PTW_Inspection_Report__c").update(req.body,
 
                 function(err, rets) {
