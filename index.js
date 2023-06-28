@@ -1,4 +1,3 @@
-//test
 const express = require('express');
 const app = express();
 const bodyParser= require('body-parser');
@@ -6,50 +5,18 @@ const PORT = process.env.PORT || 3000 ;
 var http = require('http'); //Adding http
 var jsforce = require('jsforce'); //Adding JsForce
 
+// Connect to a local redis intance locally, and the Heroku-provided URL in production
+let REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
+
+// Create / Connect to a named work queue
+let workQueue = new Queue('work', REDIS_URL);
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-//GET
-/*app.get('/', (req, res) => {
-    const str="I AM AN ENDPOINT FOR YOUR SALESFORCE APPLICATION";
-    res.send(str);
-
-    var conn = new jsforce.Connection({
-        // you can change loginUrl to connect to sandbox or prerelease env.
-        loginUrl: 'https://test.salesforce.com'
-    });
-    var username = 'sfdc-thaioil.r2@roundtwosolutions.com.devapex';
-    var password = 'sfdc@r22020';
-
-    conn.login(username, password, function (err, userInfo) {
-        if (err) {
-            return console.error(err);
-        }
-        // Now you can get the access token and instance URL information.
-        // Save them to establish a connection next time.
-        console.log("accessToken: "+ conn.accessToken);
-        console.log("instanceUrl: "+ conn.instanceUrl);
-        // logged in user property
-        console.log("User ID: " + userInfo.id);
-        console.log("Org ID: " + userInfo.organizationId);
-
-        //Perform SOQL Here 
-        var records = [];
-        conn.query("SELECT Id, Name FROM Account", function (err, result) {
-            if (err) {
-                return console.error(err);
-            }
-            console.log("total : " + result.totalSize);
-            console.log("fetched : " + result.records.length);
-        });
-
-    })
-});*/
 
 //Sol1
 app.get('/querymore', (req, res) => {
     const str="Query More - ";
-    // res.send(str);
 
     var conn = new jsforce.Connection({
         // you can change loginUrl to connect to sandbox or prerelease env.
@@ -101,6 +68,11 @@ app.get('/querymore', (req, res) => {
 
         // res.send(str+" done");
     });
+});
+
+// You can listen to global events to get notified when jobs are processed
+workQueue.on('global:completed', (jobId, result) => {
+    console.log(`Job completed with result ${result}`);
 });
 
 // app.post('/autorunupdate', (req, res) => {
@@ -160,84 +132,6 @@ app.get('/querymore', (req, res) => {
 //         // res.send(str+" done");
 //     });
 // });
-
-//Sol2
-/*app.get('/', (req, res) => {
-    const str="Query More";
-    // res.send(str);
-
-    var conn = new jsforce.Connection({
-        // you can change loginUrl to connect to sandbox or prerelease env.
-        loginUrl: 'https://test.salesforce.com'
-    });
-    var username = 'sfdc-thaioil.r2@roundtwosolutions.com.devapex';
-    var password = 'sfdc@r22020';
-
-    conn.login(username, password, function (err, userInfo) {
-
-        if (err) {return console.error(err);}
-        console.log("accessToken: "+ conn.accessToken);
-        console.log("instanceUrl: "+ conn.instanceUrl);
-        console.log("User ID: " + userInfo.id);
-        console.log("Org ID: " + userInfo.organizationId);
-
-        //Perform SOQL Here 
-        var records = [];
-        conn.query("SELECT Id, Name,CreatedBy.Name FROM PTW_Inspection_Report__c LIMIT 8100", function(err, result) { 
-
-            //in the event that (blunder) { return console.error(err); } 
-            if (err) {return console.error(err);}
-            
-            console.log('FirstQuery---------');
-            console.log("total : " + result.totalSize); 
-            console.log("fetched : " + result.records.length); 
-            console.log("records : " + result.done);
-            console.log("next records URL : " + result.nextRecordsUrl);
-
-            // let baseNextUrl = result.nextRecordsUrl.split('-')[0];
-            // let nextUrls = [];
-            // for(let i = 1; i < result.totalSize / 2000; i++){
-            //     nextUrls.push(`${baseNextUrl}-${i*2000}`);
-            //     console.log('nextUrls: ',nextUrls);
-            //     console.log("total : " + result.totalSize); 
-            //     console.log("fetched : " + result.records.length); 
-            //     console.log("records : " + result.done);
-            
-                conn.queryMore(result.nextRecordsUrl+'',{batchSize :2000},(err,result) => {
-                    if (err) {return console.error(err);}
-
-                    console.log('queryMore---------');
-                    console.log("fetched : " + result.records.length); 
-                    console.log("records : " + result.done);
-                    console.log("next records URL : " + result.nextRecordsUrl);
-                    if(result.done != true){
-                        conn.queryMore(result.nextRecordsUrl+'',{batchSize :2000},(err,result) => {
-                            console.log('queryMore 2---------');
-                            console.log("fetched : " + result.records.length); 
-                            console.log("records : " + result.done);
-                            console.log("next records URL : " + result.nextRecordsUrl);
-                        }) ; 
-                    }
-                    res.send(str+"> total : " + response.totalSize+"- fetched : " + response.records.length+"- nextUrls :"+nextUrls);
-    
-                }) ; 
-            // }
-
-        });
-
-        
-        // let response = query('SELECT Id, Name,CreatedBy.Name FROM PTW_Inspection_Report__c LIMIT 2005');
-        // let baseNextUrl = response.nextRecordsUrl.split('-')[0];
-        // let nextUrls = [];
-        // for(let i = 1; i < response.totalSize / 2000; i++){
-        // nextUrls.push(`${baseNextUrl}-${i*2000}`);
-        // }
-        // res.send(str+"> total : " + response.totalSize+"- fetched : " + response.records.length+"- nextUrls :"+nextUrls);
-             
-        
-        res.send(str+" done");
-    })
-});*/
 
 //POST
 app.post('/createrecord', (req, res) => {
@@ -328,6 +222,7 @@ app.post('/deleteaccount', (req, res) => {
         res.send('No data Received---deelete');
     }
 });
+
 app.listen(PORT, () => {
     console.log(`Listening on ${ PORT }`);
 });
@@ -373,4 +268,116 @@ console.log( 'Express server listening on port ' + app.get( 'port' ));
 });
 */
 
+/*app.get('/', (req, res) => {
+    const str="I AM AN ENDPOINT FOR YOUR SALESFORCE APPLICATION";
+    res.send(str);
 
+    var conn = new jsforce.Connection({
+        // you can change loginUrl to connect to sandbox or prerelease env.
+        loginUrl: 'https://test.salesforce.com'
+    });
+    var username = 'sfdc-thaioil.r2@roundtwosolutions.com.devapex';
+    var password = 'sfdc@r22020';
+
+    conn.login(username, password, function (err, userInfo) {
+        if (err) {
+            return console.error(err);
+        }
+        // Now you can get the access token and instance URL information.
+        // Save them to establish a connection next time.
+        console.log("accessToken: "+ conn.accessToken);
+        console.log("instanceUrl: "+ conn.instanceUrl);
+        // logged in user property
+        console.log("User ID: " + userInfo.id);
+        console.log("Org ID: " + userInfo.organizationId);
+
+        //Perform SOQL Here 
+        var records = [];
+        conn.query("SELECT Id, Name FROM Account", function (err, result) {
+            if (err) {
+                return console.error(err);
+            }
+            console.log("total : " + result.totalSize);
+            console.log("fetched : " + result.records.length);
+        });
+
+    })
+});*/
+
+//Sol2
+/*app.get('/', (req, res) => {
+    const str="Query More";
+    // res.send(str);
+
+    var conn = new jsforce.Connection({
+        // you can change loginUrl to connect to sandbox or prerelease env.
+        loginUrl: 'https://test.salesforce.com'
+    });
+    var username = 'sfdc-thaioil.r2@roundtwosolutions.com.devapex';
+    var password = 'sfdc@r22020';
+
+    conn.login(username, password, function (err, userInfo) {
+
+        if (err) {return console.error(err);}
+        console.log("accessToken: "+ conn.accessToken);
+        console.log("instanceUrl: "+ conn.instanceUrl);
+        console.log("User ID: " + userInfo.id);
+        console.log("Org ID: " + userInfo.organizationId);
+
+        //Perform SOQL Here 
+        var records = [];
+        conn.query("SELECT Id, Name,CreatedBy.Name FROM PTW_Inspection_Report__c LIMIT 8100", function(err, result) { 
+
+            //in the event that (blunder) { return console.error(err); } 
+            if (err) {return console.error(err);}
+            
+            console.log('FirstQuery---------');
+            console.log("total : " + result.totalSize); 
+            console.log("fetched : " + result.records.length); 
+            console.log("records : " + result.done);
+            console.log("next records URL : " + result.nextRecordsUrl);
+
+            // let baseNextUrl = result.nextRecordsUrl.split('-')[0];
+            // let nextUrls = [];
+            // for(let i = 1; i < result.totalSize / 2000; i++){
+            //     nextUrls.push(`${baseNextUrl}-${i*2000}`);
+            //     console.log('nextUrls: ',nextUrls);
+            //     console.log("total : " + result.totalSize); 
+            //     console.log("fetched : " + result.records.length); 
+            //     console.log("records : " + result.done);
+            
+                conn.queryMore(result.nextRecordsUrl+'',{batchSize :2000},(err,result) => {
+                    if (err) {return console.error(err);}
+
+                    console.log('queryMore---------');
+                    console.log("fetched : " + result.records.length); 
+                    console.log("records : " + result.done);
+                    console.log("next records URL : " + result.nextRecordsUrl);
+                    if(result.done != true){
+                        conn.queryMore(result.nextRecordsUrl+'',{batchSize :2000},(err,result) => {
+                            console.log('queryMore 2---------');
+                            console.log("fetched : " + result.records.length); 
+                            console.log("records : " + result.done);
+                            console.log("next records URL : " + result.nextRecordsUrl);
+                        }) ; 
+                    }
+                    res.send(str+"> total : " + response.totalSize+"- fetched : " + response.records.length+"- nextUrls :"+nextUrls);
+    
+                }) ; 
+            // }
+
+        });
+
+        
+        // let response = query('SELECT Id, Name,CreatedBy.Name FROM PTW_Inspection_Report__c LIMIT 2005');
+        // let baseNextUrl = response.nextRecordsUrl.split('-')[0];
+        // let nextUrls = [];
+        // for(let i = 1; i < response.totalSize / 2000; i++){
+        // nextUrls.push(`${baseNextUrl}-${i*2000}`);
+        // }
+        // res.send(str+"> total : " + response.totalSize+"- fetched : " + response.records.length+"- nextUrls :"+nextUrls);
+             
+        
+        res.send(str+" done");
+    })
+});*/
