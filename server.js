@@ -4,6 +4,7 @@ const bodyParser= require('body-parser');
 const PORT = process.env.PORT || 3000 ;
 var http = require('http'); //Adding http
 var jsforce = require('jsforce'); //Adding JsForce
+let Queue = require('bull');
 
 // Connect to a local redis intance locally, and the Heroku-provided URL in production
 let REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
