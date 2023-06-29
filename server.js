@@ -67,40 +67,35 @@ app.get('/querymore', (req, res) => {
         console.log("User ID: " + userInfo.id);
         console.log("Org ID: " + userInfo.organizationId);
 
-        var records = [];
-        var query = conn.query("SELECT Id, Name__c,CreatedBy.Name FROM PTW_Inspection_Report__c")
-        .on("record", function(record) {
-            records.push(record);
-        })
-        .on("end", function() {
-            console.log("total in database : " + query.totalSize);
-            console.log("total fetched : " + query.totalFetched);
-            // console.log("total records : " + JSON.stringify(records));
-
-            var objlist = [];
-            for (var i = 0; i < records.length; i++) {
-                var data = {
-                    Id: records[i].Id,
-                    Name__c: i+": test 29June "
-                };
-                //console.log(records[i].Name);
-                objlist.push(data);
-                //console.log(olist);
+        // Provide records
+        var accounts = [
+            { Name__c : 'Account #1' },
+            { Name__c : 'Account #2' },
+            { Name__c : 'Account #3' },
+        ];
+        // Create job and batch
+        var job = conn.bulk.createJob("PTW_Inspection_Report__c", "insert");
+        var batch = job.createBatch();
+        // start job
+        batch.execute(accounts);
+        // listen for events
+        batch.on("error", function(batchInfo) { // fired when batch request is queued in server.
+            console.log('Error, batchInfo:', batchInfo);
+        });
+        batch.on("queue", function(batchInfo) { // fired when batch request is queued in server.
+            console.log('queue, batchInfo:', batchInfo);
+            batch.poll(1000 /* interval(ms) */, 20000 /* timeout(ms) */); // start polling - Do not poll until the batch has started
+        });
+        batch.on("response", function(rets) { // fired when batch finished and result retrieved
+            for (var i=0; i < rets.length; i++) {
+            if (rets[i].success) {
+                console.log("#" + (i+1) + " loaded successfully, id = " + rets[i].id);
+            } else {
+                console.log("#" + (i+1) + " error occurred, message = " + rets[i].errors.join(', '));
             }
-
-            conn.sobject('PTW_Inspection_Report__c')
-                .update(objlist, { allowRecursive: true })
-                .then((rets) => {
-                    console.log('Update Successfully');
-                    res.send('Update Successfully');
-            });
-        })
-        .on("error", function(err) {
-            console.error(err);
-        })
-        .run({ autoFetch : true, maxFetch : 20000 });
-
-    });
+            }
+            // ...
+        });
 });
 
 app.listen(PORT, () => {
