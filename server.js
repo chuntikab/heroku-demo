@@ -12,63 +12,12 @@ let REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
 // Create / Connect to a named work queue
 let workQueue = new Queue('work', REDIS_URL);
 
+// Serve the two static assets
+app.get('/', (req, res) => res.sendFile('index.html', { root: __dirname }));
+app.get('/client.js', (req, res) => res.sendFile('client.js', { root: __dirname }));
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-//Sol1
-app.get('/querymore', (req, res) => {
-    const str="Query More - ";
-
-    var conn = new jsforce.Connection({
-        // you can change loginUrl to connect to sandbox or prerelease env.
-        loginUrl: 'https://login.salesforce.com'
-    });
-    var username = 'chuntika.bum@resilient-goat-reze1m.com';
-    var password = 'TrailHead1007ScMCLFfUPVaYKOTrXoih755C2';
-
-    conn.login(username, password, function (err, userInfo) {
-
-        if (err) {return console.error(err);}
-        console.log("accessToken: "+ conn.accessToken);
-        console.log("instanceUrl: "+ conn.instanceUrl);
-        console.log("User ID: " + userInfo.id);
-        console.log("Org ID: " + userInfo.organizationId);
-
-        var records = [];
-        var query = conn.query("SELECT Id, Name__c,CreatedBy.Name FROM PTW_Inspection_Report__c")
-        .on("record", function(record) {
-            records.push(record);
-        })
-        .on("end", function() {
-            console.log("total in database : " + query.totalSize);
-            console.log("total fetched : " + query.totalFetched);
-            // console.log("total records : " + JSON.stringify(records));
-
-            var objlist = [];
-            for (var i = 0; i < records.length; i++) {
-                var data = {
-                    Id: records[i].Id,
-                    Name__c: i+": test 29June "
-                };
-                //console.log(records[i].Name);
-                objlist.push(data);
-                //console.log(olist);
-            }
-
-            conn.sobject('PTW_Inspection_Report__c')
-                .update(objlist, { allowRecursive: true })
-                .then((rets) => {
-                    console.log('Update Successfully');
-                    res.send('Update Successfully');
-            });
-        })
-        .on("error", function(err) {
-            console.error(err);
-        })
-        .run({ autoFetch : true, maxFetch : 20000 });
-
-    });
-});
 
 // Kick off a new job by adding it to the work queue
 app.post('/job', async (req, res) => {
@@ -128,8 +77,63 @@ workQueue.on('global:completed', (jobId, result) => {
             console.error(err);
         })
         .run({ autoFetch : true, maxFetch : 20000 });
-        
+
     console.log(`Job completed with result ${result}`);
+});
+
+//Sol1
+app.get('/querymore', (req, res) => {
+    const str="Query More - ";
+
+    var conn = new jsforce.Connection({
+        // you can change loginUrl to connect to sandbox or prerelease env.
+        loginUrl: 'https://login.salesforce.com'
+    });
+    var username = 'chuntika.bum@resilient-goat-reze1m.com';
+    var password = 'TrailHead1007ScMCLFfUPVaYKOTrXoih755C2';
+
+    conn.login(username, password, function (err, userInfo) {
+
+        if (err) {return console.error(err);}
+        console.log("accessToken: "+ conn.accessToken);
+        console.log("instanceUrl: "+ conn.instanceUrl);
+        console.log("User ID: " + userInfo.id);
+        console.log("Org ID: " + userInfo.organizationId);
+
+        var records = [];
+        var query = conn.query("SELECT Id, Name__c,CreatedBy.Name FROM PTW_Inspection_Report__c")
+        .on("record", function(record) {
+            records.push(record);
+        })
+        .on("end", function() {
+            console.log("total in database : " + query.totalSize);
+            console.log("total fetched : " + query.totalFetched);
+            // console.log("total records : " + JSON.stringify(records));
+
+            var objlist = [];
+            for (var i = 0; i < records.length; i++) {
+                var data = {
+                    Id: records[i].Id,
+                    Name__c: i+": test 29June "
+                };
+                //console.log(records[i].Name);
+                objlist.push(data);
+                //console.log(olist);
+            }
+
+            conn.sobject('PTW_Inspection_Report__c')
+                .update(objlist, { allowRecursive: true })
+                .then((rets) => {
+                    console.log('Update Successfully');
+                    res.send('Update Successfully');
+            });
+        })
+        .on("error", function(err) {
+            console.error(err);
+        })
+        .run({ autoFetch : true, maxFetch : 20000 });
+
+    });
 });
 
 app.listen(PORT, () => {
