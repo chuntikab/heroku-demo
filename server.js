@@ -21,10 +21,10 @@ app.get('/querymore', (req, res) => {
 
     var conn = new jsforce.Connection({
         // you can change loginUrl to connect to sandbox or prerelease env.
-        loginUrl: 'https://test.salesforce.com'
+        loginUrl: 'https://login.salesforce.com'
     });
-    var username = 'sfdc-thaioil.r2@roundtwosolutions.com.devapex';
-    var password = 'sfdc@r22020';
+    var username = 'chuntika.bum@resilient-goat-reze1m.com';
+    var password = 'TrailHead1007ScMCLFfUPVaYKOTrXoih755C2';
 
     conn.login(username, password, function (err, userInfo) {
 
@@ -48,7 +48,7 @@ app.get('/querymore', (req, res) => {
             for (var i = 0; i < records.length; i++) {
                 var data = {
                     Id: records[i].Id,
-                    Name__c: i+": call apex "
+                    Name__c: i+": test 29June "
                 };
                 //console.log(records[i].Name);
                 objlist.push(data);
