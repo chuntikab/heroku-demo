@@ -45,39 +45,6 @@ app.get('/job/:id', async (req, res) => {
 
 // You can listen to global events to get notified when jobs are processed
 workQueue.on('global:completed', (jobId, result) => {
-    var records = [];
-        var query = conn.query("SELECT Id, Name__c,CreatedBy.Name FROM PTW_Inspection_Report__c")
-        .on("record", function(record) {
-            records.push(record);
-        })
-        .on("end", function() {
-            console.log("total in database : " + query.totalSize);
-            console.log("total fetched : " + query.totalFetched);
-            // console.log("total records : " + JSON.stringify(records));
-
-            var objlist = [];
-            for (var i = 0; i < records.length; i++) {
-                var data = {
-                    Id: records[i].Id,
-                    Name__c: i+": test 29June "
-                };
-                //console.log(records[i].Name);
-                objlist.push(data);
-                //console.log(olist);
-            }
-
-            conn.sobject('PTW_Inspection_Report__c')
-                .update(objlist, { allowRecursive: true })
-                .then((rets) => {
-                    console.log('Update Successfully');
-                    res.send('Update Successfully');
-            });
-        })
-        .on("error", function(err) {
-            console.error(err);
-        })
-        .run({ autoFetch : true, maxFetch : 20000 });
-
     console.log(`Job completed with result ${result}`);
 });
 
