@@ -67,35 +67,47 @@ app.get('/querymore', (req, res) => {
         console.log("User ID: " + userInfo.id);
         console.log("Org ID: " + userInfo.organizationId);
 
-        // Provide records
-        var accounts = [
-            { Name__c : 'Account #1' },
-            { Name__c : 'Account #2' },
-            { Name__c : 'Account #3' },
-        ];
-        // Create job and batch
-        var job = conn.bulk.createJob("PTW_Inspection_Report__c", "insert");
-        var batch = job.createBatch();
-        // start job
-        batch.execute(accounts);
-        // listen for events
-        batch.on("error", function(batchInfo) { // fired when batch request is queued in server.
-            console.log('Error, batchInfo:', batchInfo);
-        });
-        batch.on("queue", function(batchInfo) { // fired when batch request is queued in server.
-            console.log('queue, batchInfo:', batchInfo);
-            batch.poll(1000 /* interval(ms) */, 20000 /* timeout(ms) */); // start polling - Do not poll until the batch has started
-        });
-        batch.on("response", function(rets) { // fired when batch finished and result retrieved
-            for (var i=0; i < rets.length; i++) {
-            if (rets[i].success) {
-                console.log("#" + (i+1) + " loaded successfully, id = " + rets[i].id);
-            } else {
-                console.log("#" + (i+1) + " error occurred, message = " + rets[i].errors.join(', '));
+            // Provide records
+            /*var accounts = [
+                { Name : 'Account #21' },
+                { Name : 'Account #22' },
+                { Name : 'Account #23' },
+            ];*/
+            var ptws = [];
+            for (var i = 0; i < 2500 ; i++) {
+                var data = {
+                    Name__c: i
+                };
+                //console.log(records[i].Name);
+                ptws.push(data);
+                //console.log(olist);
             }
-            }
-            // ...
-        });
+            // Create job and batch
+            var job = conn.bulk.createJob("PTW_Inspection_Report__c", "insert");
+            var batch = job.createBatch();
+            // start job
+            batch.execute(ptws);
+            // listen for events
+            batch.on("error", function(batchInfo) { // fired when batch request is queued in server.
+                console.log('Error, batchInfo:', batchInfo);
+            });
+            batch.on("queue", function(batchInfo) { // fired when batch request is queued in server.
+                console.log('queue, batchInfo:', batchInfo);
+                batch.poll(1000 /* interval(ms) */, 20000 /* timeout(ms) */); // start polling - Do not poll until the batch has started
+            });
+            batch.on("response", function(rets) { // fired when batch finished and result retrieved
+                for (var i=0; i < rets.length; i++) {
+                if (rets[i].success) {
+                    console.log("#" + (i+1) + " loaded successfully, id = " + rets[i].id);
+                } else {
+                    console.log("#" + (i+1) + " error occurred, message = " + rets[i].errors.join(', '));
+                }
+                }
+                // ...
+            });
+            res.send("done");
+
+    });
 });
 
 app.listen(PORT, () => {
