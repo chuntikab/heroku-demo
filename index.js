@@ -60,7 +60,6 @@ app.get('/querymore', (req, res) => {
         })
         .run({ autoFetch : true, maxFetch : 20000 });
 
-        // res.send(str+" done");
     });
 });
 
