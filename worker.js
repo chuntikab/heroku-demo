@@ -1,3 +1,8 @@
+/**
+ * Batch Job Nodejs with Redis
+ * Doc Url : https://github.com/heroku-examples/node-workers-example/blob/main/worker.js
+ */
+
 let throng = require('throng');
 let Queue = require("bull");
 

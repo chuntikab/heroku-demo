@@ -1,3 +1,7 @@
+/**
+ * Batch Job Nodejs with Redis
+ * Doc Url : https://github.com/heroku-examples/node-workers-example/blob/main/client.js
+ */
 
 // Store for all of the jobs in progress
 let jobs = {};
