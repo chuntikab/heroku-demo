@@ -74,9 +74,9 @@ app.get('/querymore', (req, res) => {
                 { Name : 'Account #23' },
             ];*/
             var ptws = [];
-            for (var i = 0; i < 2500 ; i++) {
+            for (var i = 0; i < 10000 ; i++) {
                 var data = {
-                    Name__c: i
+                    Name__c: i+'-r2'
                 };
                 //console.log(records[i].Name);
                 ptws.push(data);
@@ -98,9 +98,11 @@ app.get('/querymore', (req, res) => {
             batch.on("response", function(rets) { // fired when batch finished and result retrieved
                 for (var i=0; i < rets.length; i++) {
                 if (rets[i].success) {
-                    console.log("#" + (i+1) + " loaded successfully, id = " + rets[i].id);
+                    console.log("#" + (i+1) + " loaded successfully, id = " + 
+                    rets[i].id);
                 } else {
-                    console.log("#" + (i+1) + " error occurred, message = " + rets[i].errors.join(', '));
+                    console.log("#" + (i+1) + " error occurred, message = " + 
+                    rets[i].errors.join(', '));
                 }
                 }
                 // ...
