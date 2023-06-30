@@ -54,6 +54,7 @@ app.get('/bulkload_v2-2', (req, res) => {
                 }
                 // ...
             });
+            
 
             res.send("bulkload_v2-2");
 
@@ -102,6 +103,12 @@ app.get('/bulkload_v2-1', (req, res) => {
                 }
                 // ...
             });
+
+            conn.bulk.job(jobId).batch(batchId).check((err, results) => {
+                // Note: all returned data is of type String from parsing the XML response from Salesforce, but the following attributes are actually numbers: apexProcessingTime, apiActiveProcessingTime, numberRecordsFailed, numberRecordsProcessed, totalProcessingTime
+                if (err) { return console.error(err); }
+                console.log('results', results);
+              });
 
             res.send("bulkload_v2-1");
 
