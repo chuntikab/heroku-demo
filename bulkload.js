@@ -11,6 +11,8 @@ var http = require('http'); //Adding http
 var jsforce = require('jsforce'); //Adding JsForce
 let Queue = require('bull');
  
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 //Solution 2 interface ver.2 - use conn.sobject(YourObject).bulkload("insert").execute()
 app.post('/bulkload_bulkload_execute', (req, res) => {
