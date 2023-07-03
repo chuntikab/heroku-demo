@@ -47,7 +47,7 @@ app.post('/bulkload_bulkload_execute', (req, res) => {
             conn.bulk.pollTimeout = 25000; // Bulk timeout can be specified globally on the connection object
 
             // conn.sobject("PTW_Inspection_Report__c").bulkload("insert").execute(ptws, function(err, rets) {
-            conn.sobject("PTW_Inspection_Report__c").bulkload("insert").execute(req, function(err, rets) {
+            conn.sobject("PTW_Inspection_Report__c").bulkload("insert").execute(req.body, function(err, rets) {
                 if (err) { return console.error(err); }
                 for (var i=0; i < rets.length; i++) {
                   if (rets[i].success) {
@@ -97,7 +97,7 @@ app.post('/bulkload_insertBulk', (req, res) => {
             conn.bulk.pollTimeout = 25000; // Bulk timeout can be specified globally on the connection object
 
             // conn.sobject("PTW_Inspection_Report__c").insertBulk(ptws, function(err, rets) {
-            conn.sobject("PTW_Inspection_Report__c").insertBulk(req, function(err, rets) {
+            conn.sobject("PTW_Inspection_Report__c").insertBulk(req.body, function(err, rets) {
                 if (err) { return console.error(err); }
                 for (var i=0; i < rets.length; i++) {
                   if (rets[i].success) {
@@ -208,7 +208,7 @@ app.get('/bulkload_v1', (req, res) => {
             var job = conn.bulk.createJob("PTW_Inspection_Report__c", "insert");
             var batch = job.createBatch();
             // start job
-            // batch.execute(req);
+            // batch.execute(req.body);
             batch.execute(ptws);
             // listen for events
             batch.on("error", function(batchInfo) { // fired when batch request is queued in server.
