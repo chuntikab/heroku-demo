@@ -117,7 +117,7 @@ app.get('/bulkload_v2-1', (req, res) => {
 });
 
 //Solution 2 - use conn.bulk.load
-app.get('/bulkload_v2', (req, res) => {
+app.post('/bulkload_v2', (req, res) => {
     const str="Query More - ";
 
     var conn = new jsforce.Connection({
