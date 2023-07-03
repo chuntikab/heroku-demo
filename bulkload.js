@@ -32,7 +32,7 @@ app.get('/bulkload_v2-2', (req, res) => {
         console.log("Org ID: " + userInfo.organizationId);
 
             // Provide records
-            var ptws = [];
+            /*var ptws = [];
             for (var i = 0; i < 10000 ; i++) {
                 var data = {
                     Name__c: i+'-r2'
@@ -41,9 +41,10 @@ app.get('/bulkload_v2-2', (req, res) => {
                 ptws.push(data);
                 //console.log(olist);
             }
+            */
             conn.bulk.pollTimeout = 25000; // Bulk timeout can be specified globally on the connection object
 
-            conn.sobject("PTW_Inspection_Report__c").bulkload("insert").execute(ptws, function(err, rets) {
+            conn.sobject("PTW_Inspection_Report__c").bulkload("insert").execute(req, function(err, rets) {
                 if (err) { return console.error(err); }
                 for (var i=0; i < rets.length; i++) {
                   if (rets[i].success) {
@@ -81,7 +82,7 @@ app.get('/bulkload_v2-1', (req, res) => {
         console.log("Org ID: " + userInfo.organizationId);
 
             // Provide records
-            var ptws = [];
+            /*var ptws = [];
             for (var i = 0; i < 10000 ; i++) {
                 var data = {
                     Name__c: i+'-r2'
@@ -89,10 +90,10 @@ app.get('/bulkload_v2-1', (req, res) => {
                 //console.log(records[i].Name);
                 ptws.push(data);
                 //console.log(olist);
-            }
+            }*/
             conn.bulk.pollTimeout = 25000; // Bulk timeout can be specified globally on the connection object
 
-            conn.sobject("PTW_Inspection_Report__c").insertBulk(ptws, function(err, rets) {
+            conn.sobject("PTW_Inspection_Report__c").insertBulk(req, function(err, rets) {
                 if (err) { return console.error(err); }
                 for (var i=0; i < rets.length; i++) {
                   if (rets[i].success) {
@@ -135,7 +136,7 @@ app.get('/bulkload_v2', (req, res) => {
         console.log("Org ID: " + userInfo.organizationId);
 
             // Provide records
-            var ptws = [];
+            /*var ptws = [];
             for (var i = 0; i < 10000 ; i++) {
                 var data = {
                     Name__c: i+'-r2'
@@ -143,9 +144,9 @@ app.get('/bulkload_v2', (req, res) => {
                 //console.log(records[i].Name);
                 ptws.push(data);
                 //console.log(olist);
-            }
+            }*/
             conn.bulk.pollTimeout = 25000; // Bulk timeout can be specified globally on the connection object
-            conn.bulk.load("PTW_Inspection_Report__c", "insert", ptws, function(err, rets) {
+            conn.bulk.load("PTW_Inspection_Report__c", "insert", req, function(err, rets) {
               if (err) { return console.error(err); }
               for (var i=0; i < rets.length; i++) {
                 if (rets[i].success) {
@@ -187,7 +188,7 @@ app.get('/bulkload_v1', (req, res) => {
                 { Name : 'Account #22' },
                 { Name : 'Account #23' },
             ];*/
-            var ptws = [];
+            /*var ptws = [];
             for (var i = 0; i < 10000 ; i++) {
                 var data = {
                     Name__c: i+'-r2'
@@ -195,12 +196,12 @@ app.get('/bulkload_v1', (req, res) => {
                 //console.log(records[i].Name);
                 ptws.push(data);
                 //console.log(olist);
-            }
+            }*/
             // Create job and batch
             var job = conn.bulk.createJob("PTW_Inspection_Report__c", "insert");
             var batch = job.createBatch();
             // start job
-            batch.execute(ptws);
+            batch.execute(req);
             // listen for events
             batch.on("error", function(batchInfo) { // fired when batch request is queued in server.
                 console.log('Error, batchInfo:', batchInfo);
