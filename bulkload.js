@@ -148,7 +148,7 @@ app.post('/bulkload_bulk-load', (req, res) => {
                 //console.log(olist);
             }*/
             conn.bulk.pollTimeout = 25000; // Bulk timeout can be specified globally on the connection object
-            conn.bulk.load("PTW_Inspection_Report__c", "insert", req, function(err, rets) {
+            conn.bulk.load("PTW_Inspection_Report__c", "insert", req.body, function(err, rets) {
             // conn.bulk.load("PTW_Inspection_Report__c", "insert", ptws, function(err, rets) {
               if (err) { return console.error(err); }
               for (var i=0; i < rets.length; i++) {
