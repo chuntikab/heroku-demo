@@ -63,105 +63,106 @@ app.get('/bulkload_v2-2', (req, res) => {
 });
 
 //Solution 2 interface ver.1 - use conn.sobject(YourObject).insertBulk()
-app.get('/bulkload_v2-1', (req, res) => {
-    const str="Query More - ";
+app.post('/bulkload_v2-1', (req, res) => {
+//     const str="Query More - ";
 
-    var conn = new jsforce.Connection({
-        // you can change loginUrl to connect to sandbox or prerelease env.
-        loginUrl: 'https://login.salesforce.com'
-    });
-    var username = 'chuntika.bum@resilient-goat-reze1m.com';
-    var password = 'TrailHead1007ScMCLFfUPVaYKOTrXoih755C2';
+//     var conn = new jsforce.Connection({
+//         // you can change loginUrl to connect to sandbox or prerelease env.
+//         loginUrl: 'https://login.salesforce.com'
+//     });
+//     var username = 'chuntika.bum@resilient-goat-reze1m.com';
+//     var password = 'TrailHead1007ScMCLFfUPVaYKOTrXoih755C2';
 
-    conn.login(username, password, function (err, userInfo) {
+//     conn.login(username, password, function (err, userInfo) {
 
-        if (err) {return console.error(err);}
-        console.log("accessToken: "+ conn.accessToken);
-        console.log("instanceUrl: "+ conn.instanceUrl);
-        console.log("User ID: " + userInfo.id);
-        console.log("Org ID: " + userInfo.organizationId);
+//         if (err) {return console.error(err);}
+//         console.log("accessToken: "+ conn.accessToken);
+//         console.log("instanceUrl: "+ conn.instanceUrl);
+//         console.log("User ID: " + userInfo.id);
+//         console.log("Org ID: " + userInfo.organizationId);
 
-            // Provide records
-            /*var ptws = [];
-            for (var i = 0; i < 10000 ; i++) {
-                var data = {
-                    Name__c: i+'-r2'
-                };
-                //console.log(records[i].Name);
-                ptws.push(data);
-                //console.log(olist);
-            }*/
-            conn.bulk.pollTimeout = 25000; // Bulk timeout can be specified globally on the connection object
+//             // Provide records
+//             /*var ptws = [];
+//             for (var i = 0; i < 10000 ; i++) {
+//                 var data = {
+//                     Name__c: i+'-r2'
+//                 };
+//                 //console.log(records[i].Name);
+//                 ptws.push(data);
+//                 //console.log(olist);
+//             }*/
+//             conn.bulk.pollTimeout = 25000; // Bulk timeout can be specified globally on the connection object
 
-            conn.sobject("PTW_Inspection_Report__c").insertBulk(req, function(err, rets) {
-                if (err) { return console.error(err); }
-                for (var i=0; i < rets.length; i++) {
-                  if (rets[i].success) {
-                    console.log("#" + (i+1) + " loaded successfully, id = " + rets[i].id);
-                  } else {
-                    console.log("#" + (i+1) + " error occurred, message = " + rets[i].errors.join(', '));
-                  }
-                }
-                // ...
-            });
+//             conn.sobject("PTW_Inspection_Report__c").insertBulk(req, function(err, rets) {
+//                 if (err) { return console.error(err); }
+//                 for (var i=0; i < rets.length; i++) {
+//                   if (rets[i].success) {
+//                     console.log("#" + (i+1) + " loaded successfully, id = " + rets[i].id);
+//                   } else {
+//                     console.log("#" + (i+1) + " error occurred, message = " + rets[i].errors.join(', '));
+//                   }
+//                 }
+//                 // ...
+//             });
 
-            conn.bulk.job(jobId).batch(batchId).check((err, results) => {
-                // Note: all returned data is of type String from parsing the XML response from Salesforce, but the following attributes are actually numbers: apexProcessingTime, apiActiveProcessingTime, numberRecordsFailed, numberRecordsProcessed, totalProcessingTime
-                if (err) { return console.error(err); }
-                console.log('results', results);
-              });
+//             conn.bulk.job(jobId).batch(batchId).check((err, results) => {
+//                 // Note: all returned data is of type String from parsing the XML response from Salesforce, but the following attributes are actually numbers: apexProcessingTime, apiActiveProcessingTime, numberRecordsFailed, numberRecordsProcessed, totalProcessingTime
+//                 if (err) { return console.error(err); }
+//                 console.log('results', results);
+//               });
 
-            res.send("bulkload_v2-1");
+//             res.send("bulkload_v2-1");
 
-    });
-});
+//     });
+// });
 
-//Solution 2 - use conn.bulk.load
-app.post('/bulkload_v2', (req, res) => {
-    const str="Query More - ";
+// //Solution 2 - use conn.bulk.load
+// app.post('/bulkload_v2', (req, res) => {
+//     const str="Query More - ";
 
-    var conn = new jsforce.Connection({
-        // you can change loginUrl to connect to sandbox or prerelease env.
-        loginUrl: 'https://login.salesforce.com'
-    });
-    var username = 'chuntika.bum@resilient-goat-reze1m.com';
-    var password = 'TrailHead1007ScMCLFfUPVaYKOTrXoih755C2';
+//     var conn = new jsforce.Connection({
+//         // you can change loginUrl to connect to sandbox or prerelease env.
+//         loginUrl: 'https://login.salesforce.com'
+//     });
+//     var username = 'chuntika.bum@resilient-goat-reze1m.com';
+//     var password = 'TrailHead1007ScMCLFfUPVaYKOTrXoih755C2';
 
-    conn.login(username, password, function (err, userInfo) {
+//     conn.login(username, password, function (err, userInfo) {
 
-        if (err) {return console.error(err);}
-        console.log("accessToken: "+ conn.accessToken);
-        console.log("instanceUrl: "+ conn.instanceUrl);
-        console.log("User ID: " + userInfo.id);
-        console.log("Org ID: " + userInfo.organizationId);
+//         if (err) {return console.error(err);}
+//         console.log("accessToken: "+ conn.accessToken);
+//         console.log("instanceUrl: "+ conn.instanceUrl);
+//         console.log("User ID: " + userInfo.id);
+//         console.log("Org ID: " + userInfo.organizationId);
 
-            // Provide records
-            /*var ptws = [];
-            for (var i = 0; i < 10000 ; i++) {
-                var data = {
-                    Name__c: i+'-r2'
-                };
-                //console.log(records[i].Name);
-                ptws.push(data);
-                //console.log(olist);
-            }*/
-            conn.bulk.pollTimeout = 25000; // Bulk timeout can be specified globally on the connection object
-            // conn.bulk.load("PTW_Inspection_Report__c", "insert", req, function(err, rets) {
-            conn.bulk.load("PTW_Inspection_Report__c", "insert", req, function(err, rets) {
-              if (err) { return console.error(err); }
-              for (var i=0; i < rets.length; i++) {
-                if (rets[i].success) {
-                  console.log("#" + (i+1) + " loaded successfully, id = " + rets[i].id);
-                } else {
-                  console.log("#" + (i+1) + " error occurred, message = " + rets[i].errors.join(', '));
-                }
-              }
-              // ...
-            });
+//             // Provide records
+//             /*var ptws = [];
+//             for (var i = 0; i < 10000 ; i++) {
+//                 var data = {
+//                     Name__c: i+'-r2'
+//                 };
+//                 //console.log(records[i].Name);
+//                 ptws.push(data);
+//                 //console.log(olist);
+//             }*/
+//             conn.bulk.pollTimeout = 25000; // Bulk timeout can be specified globally on the connection object
+//             // conn.bulk.load("PTW_Inspection_Report__c", "insert", req, function(err, rets) {
+//             conn.bulk.load("PTW_Inspection_Report__c", "insert", req, function(err, rets) {
+//               if (err) { return console.error(err); }
+//               for (var i=0; i < rets.length; i++) {
+//                 if (rets[i].success) {
+//                   console.log("#" + (i+1) + " loaded successfully, id = " + rets[i].id);
+//                 } else {
+//                   console.log("#" + (i+1) + " error occurred, message = " + rets[i].errors.join(', '));
+//                 }
+//               }
+//               // ...
+//             });
 
-            res.send("bulkload_v2");
+//             res.send("bulkload_v2");
 
-    });
+//     });
+    res.send("bulkload_v2");
 });
 
 //Solution 1 - use metho9d batch.on
