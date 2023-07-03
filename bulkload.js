@@ -146,6 +146,7 @@ app.get('/bulkload_v2', (req, res) => {
                 //console.log(olist);
             }*/
             conn.bulk.pollTimeout = 25000; // Bulk timeout can be specified globally on the connection object
+            // conn.bulk.load("PTW_Inspection_Report__c", "insert", req, function(err, rets) {
             conn.bulk.load("PTW_Inspection_Report__c", "insert", req, function(err, rets) {
               if (err) { return console.error(err); }
               for (var i=0; i < rets.length; i++) {
@@ -202,6 +203,7 @@ app.get('/bulkload_v1', (req, res) => {
             var batch = job.createBatch();
             // start job
             batch.execute(req);
+            // batch.execute(ptws);
             // listen for events
             batch.on("error", function(batchInfo) { // fired when batch request is queued in server.
                 console.log('Error, batchInfo:', batchInfo);
