@@ -140,7 +140,7 @@ app.post('/bulkload_bulk-load', (req, res) => {
         console.log("Org ID: " + userInfo.organizationId);
 
             // Provide records
-            /*var ptws = [];
+            var ptws = [];
             for (var i = 0; i < 10000 ; i++) {
                 var data = {
                     Name__c: i+'-r2'
@@ -148,10 +148,10 @@ app.post('/bulkload_bulk-load', (req, res) => {
                 //console.log(records[i].Name);
                 ptws.push(data);
                 //console.log(olist);
-            }*/
+            }
             conn.bulk.pollTimeout = 25000; // Bulk timeout can be specified globally on the connection object
-            conn.bulk.load("PTW_Inspection_Report__c", "insert", req.body, function(err, rets) {
-            // conn.bulk.load("PTW_Inspection_Report__c", "insert", ptws, function(err, rets) {
+            // conn.bulk.load("PTW_Inspection_Report__c", "insert", req.body, function(err, rets) {
+            conn.bulk.load("PTW_Inspection_Report__c", "insert", ptws, function(err, rets) {
               if (err) { return console.error(err); }
               for (var i=0; i < rets.length; i++) {
                 if (rets[i].success) {
